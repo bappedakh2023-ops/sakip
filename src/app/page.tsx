@@ -4,30 +4,17 @@ import { supabase } from '@/lib/supabase';
 
 export default function Dashboard() {
   const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('penilaian_kinerja')
-          .select('id, realisasi, opd(nama_opd)');
-        
-        if (error) throw error;
-        setData(data || []);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      // Menggunakan nama tabel yang benar dari database.sql
+      const { data } = await supabase
+        .from('penilaian_kinerja') 
+        .select('id, realisasi, opd(nama_opd)');
+      setData(data || []);
     }
     fetchData();
   }, []);
-
-  if (loading) return <div className="p-8">Memuat data...</div>;
-  if (error) return <div className="p-8 text-red-500">Error: {error}</div>;
 
   return (
     <main className="p-8">
@@ -36,7 +23,7 @@ export default function Dashboard() {
         <thead>
           <tr className="bg-gray-100">
             <th className="border p-2">OPD</th>
-            <th className="border p-2">Nilai Realisasi</th>
+            <th className="border p-2">Realisasi</th>
           </tr>
         </thead>
         <tbody>
